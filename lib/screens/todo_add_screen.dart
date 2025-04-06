@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_indra/models/todo.dart';
 
 class TodoAdd extends StatefulWidget {
   const TodoAdd({super.key});
@@ -9,6 +10,17 @@ class TodoAdd extends StatefulWidget {
 
 class _TodoAddState extends State<TodoAdd> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  TextEditingController titleControler = TextEditingController();
+  TextEditingController descriptionControler = TextEditingController();
+
+  @override
+  void dispose() {
+    titleControler.dispose();
+    descriptionControler.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +55,7 @@ class _TodoAddState extends State<TodoAdd> {
                     Column(
                       children: [
                         TextFormField(
+                          controller: titleControler,
                           decoration: InputDecoration(
                             fillColor: const Color.fromARGB(255, 255, 254, 254),
                             // hintText: "Enter title",
@@ -64,7 +77,7 @@ class _TodoAddState extends State<TodoAdd> {
 
                         TextFormField(
                           maxLines: 3,
-
+                          controller: descriptionControler,
                           decoration: InputDecoration(
                             fillColor: const Color.fromARGB(255, 254, 254, 254),
                             // hintText: "Enter Description",
@@ -95,7 +108,16 @@ class _TodoAddState extends State<TodoAdd> {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              _formKey.currentState!.validate();
+                              bool isValid = _formKey.currentState!.validate();
+
+                              if (isValid) {
+                                Todo todo = Todo(
+                                  title: titleControler.text,
+                                  description: descriptionControler.text,
+                                  isCompleted: false,
+                                );
+                                Navigator.of(context).pop(todo);
+                              }
                             },
                             style: ButtonStyle(
                               backgroundColor: WidgetStatePropertyAll(

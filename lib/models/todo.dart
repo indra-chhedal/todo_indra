@@ -10,11 +10,3 @@ class Todo {
   });
 }
 
-List<Todo> todos = [
-  Todo(title: "go to school", description: "hello there", isCompleted: false),
-  Todo(title: "go to school", description: "hello there", isCompleted: false),
-  Todo(title: "go to school", description: "hello there", isCompleted: false),
-  Todo(title: "go to school", description: "hello there", isCompleted: false),
-  Todo(title: "go to school", description: "hello there", isCompleted: false),
-  Todo(title: "go to school", description: "hello there", isCompleted: false),
-];

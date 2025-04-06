@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_indra/models/todo.dart';
 import 'package:todo_indra/screens/todo_add_screen.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -11,6 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<Todo> todos = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,13 +22,13 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             Text("Total Number of list is (${todos.length})"),
-            SizedBox(height: 10,),
+            SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: todos.length,
                 itemBuilder: (BuildContext context, int index) {
                   Todo todo = todos[index];
-              
+
                   return ListTile(
                     title: Text(todo.title),
                     subtitle: Text(todo.description),
@@ -43,14 +44,23 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          //use asynchornous
+          Todo? todo = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TodoAdd()),
           );
+          if (todo != null) {
+            setState(() {
+              todos.add(todo);
+            });
+          }
         },
         child: Icon(Icons.add),
       ),
     );
   }
 }
+
+
+//if list item is empty show todo is empty otherwise show todos
