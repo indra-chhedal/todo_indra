@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:todo_indra/models/todo.dart';
+import 'package:todo_indra/screens/edit_screen.dart';
 import 'package:todo_indra/screens/todo_add_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -24,28 +26,92 @@ class _HomeScreenState extends State<HomeScreen> {
             Text("Total Number of list is (${todos.length})"),
             SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: todos.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Todo todo = todos[index];
+              child:
+                  todos.isEmpty
+                      ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SvgPicture.asset('images/empty.svg', width: 200),
+                            Text(
+                              "Empty List Items",
+                              style: TextStyle(color: Colors.red, fontSize: 30),
+                            ),
+                          ],
+                        ),
+                      )
+                      : ListView.builder(
+                        itemCount: todos.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Todo todo = todos[index];
 
-                  return ListTile(
-                    title: Text(todo.title),
-                    subtitle: Text(todo.description),
-                    trailing: Checkbox(
-                      value: todo.isCompleted,
-                      onChanged: (value) {},
-                    ),
-                  );
-                },
-              ),
+                          return ListTile(
+                            onLongPress: () {
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) {
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 30),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading: Icon(Icons.delete),
+                                          title: Text("Delete"),
+                                          onTap: () {
+                                            //show dialog for dialog box for alert dialog
+                                            Navigator.of(context).pop();
+                                            setState(() {
+                                              todos.removeAt(index);
+                                            });
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(Icons.edit),
+                                          title: Text("Edit"),
+                                          onTap: () async {
+                                            
+                                            await Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (context) => EditScreen(
+                                                      todoItem: todo,
+                                                    ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            title: Text(todo.title),
+                            subtitle: Text(todo.description),
+                            trailing: Checkbox(
+                              value: todo.isCompleted,
+                              onChanged: (value) {
+                                //yasma chai todos ko index lai replace garxa todo la ani complete xa vani uncomplete garxa tougle garxa
+                                setState(() {
+                                  //todo lai rerender garna parxa setstate garyara
+                                  todos[index] = todo.copyWith(
+                                    isCompleted: !todo.isCompleted,
+                                  );
+                                });
+                              },
+                            ),
+                          );
+                        },
+                      ),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //use asynchornous
+          //await rw asynchronous sadhi use garna parxa kai value lina ko lagi
+          //use asynchornous for navigator.push la always wait garxa some value pop hunxa vnara if pop with value then add to list otherwise empty list items
           Todo? todo = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => TodoAdd()),
@@ -63,4 +129,4 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
-//if list item is empty show todo is empty otherwise show todos
+//using long press and then delete list  using one dialog box with conformation.

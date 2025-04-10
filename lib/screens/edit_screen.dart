@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:todo_indra/models/todo.dart';
 
-class TodoAdd extends StatefulWidget {
-  const TodoAdd({super.key});
+class EditScreen extends StatefulWidget {
+  const EditScreen({super.key, required this.todoItem});
+
+  final Todo todoItem;
 
   @override
-  State<TodoAdd> createState() => _TodoAddState();
+  State<EditScreen> createState() => _EditScreenState();
 }
 
-class _TodoAddState extends State<TodoAdd> {
+class _EditScreenState extends State<EditScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  TextEditingController titleControler = TextEditingController();
-  TextEditingController descriptionControler = TextEditingController();
+  late TextEditingController titleControler;
+  late TextEditingController descriptionControler;
 
   @override
-  void dispose() {
-    titleControler.dispose();
-    descriptionControler.dispose();
-    super.dispose();
-  }//always dispose controler if we doesnt dispose it will be allocate memory space
+  void initState() {
+    titleControler = TextEditingController(text: widget.todoItem.title);
+    descriptionControler = TextEditingController(
+      text: widget.todoItem.description,
+    );
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class _TodoAddState extends State<TodoAdd> {
                 child: Column(
                   spacing: 10,
                   children: [
-                    Text("Add a Item", style: TextStyle(fontSize: 24)),
+                    Text("Edit Item", style: TextStyle(fontSize: 24)),
 
                     Column(
                       children: [
@@ -125,7 +129,7 @@ class _TodoAddState extends State<TodoAdd> {
                               ),
                             ),
                             child: Text(
-                              "Add Item",
+                              "Edit Item",
                               style: TextStyle(fontSize: 20, color: Colors.red),
                             ),
                           ),
